@@ -32,6 +32,8 @@ The synthetic seed is designed to behave like a realistic relationship-intellige
 - Common call/event scenario: `event:encrypted-call-alpha` links Alice, David, Boris, and Farah.
 - Second-degree social discovery: `person:alice-chen -> person:ben-ortiz -> person:carla-singh`.
 - Third-degree social discovery: `person:alice-chen -> person:ben-ortiz -> person:carla-singh -> person:david-kim`.
+- Shared organization discovery: `person:farah-al-mansour -> org:atlas-logistics <- person:boris-volkov`.
+- Shared education discovery: `person:alice-chen -> edu:stanford <- person:david-kim`.
 
 ## Commands
 

@@ -398,6 +398,117 @@ Frontend rendering rules:
 - Show `intermediate_nodes` as the bridge people, ordered by `centrality_rank`.
 - Use empty `results[]` as a normal "no third-degree candidates found" state.
 
+## Feature 5: Shared Organizations
+
+Use this endpoint to detect hidden links through shared employers, affiliations, vendors, NGOs, and organizations.
+
+```http
+GET /api/v1/entities/person:farah-al-mansour/shared-orgs?target=person:boris-volkov
+```
+
+Example response:
+
+```json
+{
+  "source_id": "person:farah-al-mansour",
+  "target_id": "person:boris-volkov",
+  "count": 1,
+  "organizations": [
+    {
+      "organization": {
+        "id": "org:atlas-logistics",
+        "label": "Organization",
+        "display_name": "Atlas Logistics",
+        "properties": {
+          "pagerank_score": 0.63
+        }
+      },
+      "source_role": "Regional Manager",
+      "target_role": "External Broker",
+      "source_relationship_type": "WORKS_AT",
+      "target_relationship_type": "WORKS_AT",
+      "source_start_date": "2021-03-01",
+      "source_end_date": null,
+      "target_start_date": "2022-11-01",
+      "target_end_date": null,
+      "overlap_months": 43,
+      "concurrent": true,
+      "org_importance_score": 0.63,
+      "score": 0.63,
+      "explanation": {
+        "summary": "Farah Al Mansour and Boris Volkov share Atlas Logistics with overlapping tenure.",
+        "algorithms": ["bipartite_common_neighbor", "temporal_overlap", "organization_pagerank_weight"],
+        "evidence": []
+      }
+    }
+  ]
+}
+```
+
+Frontend rendering rules:
+
+- Show each shared organization as an evidence card or table row.
+- Use `source_role` and `target_role` to explain why the organization matters.
+- Use `concurrent` and `overlap_months` as the main temporal signal.
+- Use `score` for ranking, and `org_importance_score` as supporting evidence.
+- Empty `organizations[]` is a normal "no shared organizations found" state.
+
+## Feature 6: Shared Education
+
+Use this endpoint to detect hidden links through shared schools, universities, training programs, and attendance windows.
+
+```http
+GET /api/v1/entities/person:alice-chen/shared-edu?target=person:david-kim
+```
+
+Example response:
+
+```json
+{
+  "source_id": "person:alice-chen",
+  "target_id": "person:david-kim",
+  "count": 1,
+  "institutions": [
+    {
+      "institution": {
+        "id": "edu:stanford",
+        "label": "EducationInstitution",
+        "display_name": "Stanford University",
+        "properties": {
+          "country": "US"
+        }
+      },
+      "source_degree": "MS",
+      "target_degree": "MS",
+      "source_field": "Computer Science",
+      "target_field": "Data Science",
+      "source_start_year": 2010,
+      "source_end_year": 2012,
+      "target_start_year": 2011,
+      "target_end_year": 2013,
+      "attendance_overlap_years": 1,
+      "field_of_study_match": false,
+      "degree_level_match": true,
+      "co_attendance_probability": 0.768525,
+      "score": 0.803894,
+      "explanation": {
+        "summary": "Both people studied at Stanford University with 1 overlapping attendance year(s).",
+        "algorithms": ["education_common_neighbor", "attendance_year_overlap", "degree_field_similarity", "co_attendance_probability"],
+        "evidence": []
+      }
+    }
+  ]
+}
+```
+
+Frontend rendering rules:
+
+- Show each shared institution as an evidence card or table row.
+- Use `attendance_overlap_years` as the primary education timing signal.
+- Use `degree_level_match` and `field_of_study_match` as supporting similarity indicators.
+- Show `co_attendance_probability` as a confidence-style metric, and `score` as the backend ranking value.
+- Empty `institutions[]` is a normal "no shared education found" state.
+
 ## Deterministic Complex Seed Data
 
 The backend seed is intentionally larger than a tiny demo. It is designed to mimic messy real-world relationship intelligence data:

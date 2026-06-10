@@ -1,6 +1,6 @@
 # Relationship Discovery & Network Analysis Engine
 
-Backend-first implementation of RDNAE Feature 1 from the PRD.
+Backend-first implementation of RDNAE features from the PRD.
 
 ## Current Scope
 
@@ -12,6 +12,8 @@ Backend-first implementation of RDNAE Feature 1 from the PRD.
 - Feature 2 endpoints for friend/follower, following, friends, mutuals, and social summary analysis.
 - Feature 3 endpoint for second-degree hidden connection discovery with Jaccard, Adamic-Adar, paths, and explanations.
 - Feature 4 endpoint support for third-degree hidden connection discovery with Katz-style scoring and intermediate-node annotations.
+- Feature 5 endpoint for shared organization detection with temporal overlap, role evidence, and organization importance scoring.
+- Feature 6 endpoint for shared education detection with attendance overlap, degree/field matching, and co-attendance probability.
 - Frontend integration guide in `docs/frontend-integration.md`.
 
 ## Run Locally
