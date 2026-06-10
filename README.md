@@ -9,6 +9,7 @@ Backend-first implementation of RDNAE Feature 1 from the PRD.
 - Redis runtime configuration.
 - Deterministic synthetic seed data with 48 people, multi-community clusters, shared org/education/location evidence, common interactions, and explicit hidden-connection scenarios.
 - Feature 1 endpoints for health, entity search, entity detail, and depth-1 ego graph.
+- Feature 2 endpoints for friend/follower, following, friends, mutuals, and social summary analysis.
 - Frontend integration guide in `docs/frontend-integration.md`.
 
 ## Run Locally
