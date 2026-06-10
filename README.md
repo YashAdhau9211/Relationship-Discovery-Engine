@@ -10,6 +10,8 @@ Backend-first implementation of RDNAE Feature 1 from the PRD.
 - Deterministic synthetic seed data with 48 people, multi-community clusters, shared org/education/location evidence, common interactions, and explicit hidden-connection scenarios.
 - Feature 1 endpoints for health, entity search, entity detail, and depth-1 ego graph.
 - Feature 2 endpoints for friend/follower, following, friends, mutuals, and social summary analysis.
+- Feature 3 endpoint for second-degree hidden connection discovery with Jaccard, Adamic-Adar, paths, and explanations.
+- Feature 4 endpoint support for third-degree hidden connection discovery with Katz-style scoring and intermediate-node annotations.
 - Frontend integration guide in `docs/frontend-integration.md`.
 
 ## Run Locally
