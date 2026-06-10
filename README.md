@@ -14,6 +14,8 @@ Backend-first implementation of RDNAE features from the PRD.
 - Feature 4 endpoint support for third-degree hidden connection discovery with Katz-style scoring and intermediate-node annotations.
 - Feature 5 endpoint for shared organization detection with temporal overlap, role evidence, and organization importance scoring.
 - Feature 6 endpoint for shared education detection with attendance overlap, degree/field matching, and co-attendance probability.
+- Feature 7 endpoint for shared location detection with time overlap, frequency, recency, and co-presence scoring.
+- Feature 8 endpoint for common interaction discovery with direct counts, shared targets, resource allocation, and recency-weighted scoring.
 - Frontend integration guide in `docs/frontend-integration.md`.
 
 ## Run Locally

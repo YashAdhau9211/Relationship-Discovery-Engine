@@ -34,6 +34,8 @@ The synthetic seed is designed to behave like a realistic relationship-intellige
 - Third-degree social discovery: `person:alice-chen -> person:ben-ortiz -> person:carla-singh -> person:david-kim`.
 - Shared organization discovery: `person:farah-al-mansour -> org:atlas-logistics <- person:boris-volkov`.
 - Shared education discovery: `person:alice-chen -> edu:stanford <- person:david-kim`.
+- Shared location discovery: `person:alice-chen -> loc:asn-64512 <- person:elena-petrova`.
+- Common interaction discovery: `person:alice-chen -> event:encrypted-call-alpha <- person:david-kim`.
 
 ## Commands
 

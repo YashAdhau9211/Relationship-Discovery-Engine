@@ -509,6 +509,144 @@ Frontend rendering rules:
 - Show `co_attendance_probability` as a confidence-style metric, and `score` as the backend ranking value.
 - Empty `institutions[]` is a normal "no shared education found" state.
 
+## Feature 7: Shared Locations
+
+Use this endpoint to detect hidden links through shared physical locations, venues, and digital/IP location signals.
+
+```http
+GET /api/v1/entities/person:alice-chen/shared-locations?target=person:elena-petrova
+```
+
+Example response:
+
+```json
+{
+  "source_id": "person:alice-chen",
+  "target_id": "person:elena-petrova",
+  "count": 1,
+  "locations": [
+    {
+      "location": {
+        "id": "loc:asn-64512",
+        "label": "Location",
+        "display_name": "ASN 64512 Cloud Relay",
+        "properties": {
+          "type": "ip_asn",
+          "country_code": "ZZ"
+        }
+      },
+      "source_location_type": "ip_login",
+      "target_location_type": "ip_login",
+      "source_start_ts": "2026-03-04T21:00:00Z",
+      "source_end_ts": "2026-03-04T23:00:00Z",
+      "target_start_ts": "2026-03-04T21:00:00Z",
+      "target_end_ts": "2026-03-04T23:00:00Z",
+      "overlap_hours": 2.0,
+      "spatial_distance_km": 0.0,
+      "source_frequency": 2,
+      "target_frequency": 2,
+      "combined_frequency": 4,
+      "source_recency": 0.93,
+      "target_recency": 0.93,
+      "co_presence_score": 0.347667,
+      "score": 0.347667,
+      "explanation": {
+        "summary": "Both people share ASN 64512 Cloud Relay with 2 overlapping hour(s).",
+        "algorithms": ["shared_location_common_neighbor", "temporal_overlap_hours", "spatial_proximity", "co_presence_score"],
+        "evidence": []
+      }
+    }
+  ]
+}
+```
+
+Frontend rendering rules:
+
+- Show each shared location as a location evidence row or map/list item.
+- Use `location.properties.type` to distinguish city, venue, and IP/ASN signals.
+- Use `overlap_hours`, `combined_frequency`, and `co_presence_score` as the main evidence values.
+- `spatial_distance_km` is `0.0` for exact same-location matches in this MVP; keep the UI ready to show non-zero proximity matches later.
+- Empty `locations[]` is a normal "no shared locations found" state.
+
+## Feature 8: Common Interactions
+
+Use this endpoint to detect direct interactions and shared activity targets such as events, calls, cases, documents, vendors, or other common interaction objects.
+
+```http
+GET /api/v1/entities/person:alice-chen/common-interactions?target=person:david-kim
+```
+
+Example response:
+
+```json
+{
+  "source_id": "person:alice-chen",
+  "target_id": "person:david-kim",
+  "direct_interaction_count": 0,
+  "shared_target_count": 2,
+  "resource_allocation_score": 0.416667,
+  "recency_score": 0.68,
+  "composite_score": 0.320167,
+  "direct_interactions": [],
+  "shared_targets": [
+    {
+      "target": {
+        "id": "event:encrypted-call-alpha",
+        "label": "Event",
+        "display_name": "event:encrypted-call-alpha",
+        "properties": {
+          "type": "call",
+          "platform": "signal"
+        }
+      },
+      "source_interaction_count": 3,
+      "target_interaction_count": 2,
+      "target_total_interactors": 4,
+      "resource_allocation_contribution": 0.25,
+      "interaction_types": ["call", "event_engagement"],
+      "recency_score": 0.68,
+      "relationship_types": ["CO_OCCURRED_IN", "INTERACTED_WITH"]
+    },
+    {
+      "target": {
+        "id": "event:graph-summit-2026",
+        "label": "Event",
+        "display_name": "event:graph-summit-2026",
+        "properties": {
+          "type": "conference",
+          "platform": "offline"
+        }
+      },
+      "source_interaction_count": 3,
+      "target_interaction_count": 1,
+      "target_total_interactors": 6,
+      "resource_allocation_contribution": 0.166667,
+      "interaction_types": ["conference", "event_engagement"],
+      "recency_score": 0.68,
+      "relationship_types": ["CO_OCCURRED_IN", "INTERACTED_WITH"]
+    }
+  ],
+  "explanation": {
+    "summary": "person:alice-chen and person:david-kim share common interaction targets.",
+    "algorithms": [
+      "direct_interaction_count",
+      "common_interaction_targets",
+      "resource_allocation_index",
+      "recency_weighted_interaction_score"
+    ],
+    "evidence": []
+  }
+}
+```
+
+Frontend rendering rules:
+
+- Show `direct_interactions[]` separately from `shared_targets[]`; direct evidence is usually stronger.
+- Use `target_total_interactors` and `resource_allocation_contribution` to explain whether a shared target is broad or selective.
+- Use `interaction_types` and `relationship_types` as badges in evidence panels.
+- Use `composite_score` as the main ranking value and `recency_score` as supporting evidence.
+- Empty direct/shared arrays are normal states, not errors.
+
 ## Deterministic Complex Seed Data
 
 The backend seed is intentionally larger than a tiny demo. It is designed to mimic messy real-world relationship intelligence data:
