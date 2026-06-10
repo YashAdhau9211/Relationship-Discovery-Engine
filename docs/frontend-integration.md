@@ -181,6 +181,102 @@ Recommended frontend states:
 - Ego graph panel using `GraphResponse`.
 - Developer diagnostics page linking to `/docs` and showing `/api/v1/health`.
 
+## Feature 2: Social Analysis
+
+Use these endpoints for friend/follower and following analysis panels.
+
+### Social Summary
+
+```http
+GET /api/v1/entities/person:alice-chen/social?limit=10
+```
+
+Use this for a compact social overview card plus top-list panels.
+
+Example response:
+
+```json
+{
+  "entity_id": "person:alice-chen",
+  "follower_count": 0,
+  "following_count": 1,
+  "friend_count": 3,
+  "mutual_count": 0,
+  "follow_ratio": 0.0,
+  "platform_distribution": {
+    "synthetic-social": 3,
+    "bridge-follow": 1
+  },
+  "top_followers": [],
+  "top_following": [],
+  "friends": []
+}
+```
+
+### Followers
+
+```http
+GET /api/v1/entities/person:alice-chen/followers?limit=50
+```
+
+Shows incoming directed `FOLLOWS` relationships. Render arrows toward the profile entity.
+
+### Following
+
+```http
+GET /api/v1/entities/person:alice-chen/following?limit=50
+```
+
+Shows outgoing directed `FOLLOWS` relationships. Render arrows away from the profile entity.
+
+### Friends
+
+```http
+GET /api/v1/entities/person:alice-chen/friends?limit=50
+```
+
+Shows undirected `FRIENDS_WITH` relationships. Render as non-arrow mutual/social ties.
+
+### Mutual Connections
+
+```http
+GET /api/v1/entities/person:alice-chen/mutuals?target=person:carla-singh&limit=50
+```
+
+Shows shared social neighbors between two people. Use this for "people connecting both sides" panels before Feature 3 path ranking is available.
+
+### SocialConnection Shape
+
+All social list endpoints return `SocialConnection` items:
+
+```json
+{
+  "entity": {
+    "id": "person:ben-ortiz",
+    "label": "Person",
+    "display_name": "Ben Ortiz",
+    "properties": {}
+  },
+  "relationship_type": "FOLLOWS",
+  "direction": "outgoing",
+  "weight": 0.88,
+  "platform": "bridge-follow",
+  "timestamp": "2026-02-01T00:00:00Z",
+  "properties": {
+    "weight": 0.88,
+    "platform": "bridge-follow"
+  }
+}
+```
+
+Frontend rendering rules:
+
+- `direction: "incoming"`: follower edge points from result entity to current profile.
+- `direction: "outgoing"`: following edge points from current profile to result entity.
+- `direction: "undirected"`: render as mutual/friend/shared-neighbor tie.
+- `follow_ratio: null`: show "N/A" or an empty state when the person follows nobody.
+- Empty `results[]`: show a neutral empty state, not an error.
+
 ## Deterministic Complex Seed Data
 
 The backend seed is intentionally larger than a tiny demo. It is designed to mimic messy real-world relationship intelligence data:
