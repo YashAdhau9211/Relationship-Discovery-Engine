@@ -2,8 +2,10 @@ from functools import lru_cache
 
 from app.core.config import get_settings
 from app.db.neo4j import Neo4jClient
+from app.repositories.neo4j_connections import Neo4jConnectionRepository
 from app.repositories.neo4j_entities import Neo4jEntityRepository
 from app.repositories.neo4j_social import Neo4jSocialRepository
+from app.services.connections import ConnectionDiscoveryService
 from app.services.entities import EntityService
 from app.services.social import SocialService
 
@@ -19,3 +21,7 @@ def get_entity_service() -> EntityService:
 
 def get_social_service() -> SocialService:
     return SocialService(Neo4jSocialRepository(get_neo4j_client()))
+
+
+def get_connection_discovery_service() -> ConnectionDiscoveryService:
+    return ConnectionDiscoveryService(Neo4jConnectionRepository(get_neo4j_client()))

@@ -30,6 +30,8 @@ The synthetic seed is designed to behave like a realistic relationship-intellige
 - Payments risk scenario: `person:elena-petrova`, `person:rafael-costa`, `org:quantum-bridge-capital`, and `event:mumbai-payments-audit`.
 - Telecom signal scenario: `person:hugo-martinez`, `person:uri-cohen`, `person:wei-zhang`, and `event:singapore-signal-review`.
 - Common call/event scenario: `event:encrypted-call-alpha` links Alice, David, Boris, and Farah.
+- Second-degree social discovery: `person:alice-chen -> person:ben-ortiz -> person:carla-singh`.
+- Third-degree social discovery: `person:alice-chen -> person:ben-ortiz -> person:carla-singh -> person:david-kim`.
 
 ## Commands
 

@@ -277,6 +277,127 @@ Frontend rendering rules:
 - `follow_ratio: null`: show "N/A" or an empty state when the person follows nobody.
 - Empty `results[]`: show a neutral empty state, not an error.
 
+## Feature 3: Second-Degree Connections
+
+Use this endpoint to discover people who are not directly connected to the source, but are reachable through exactly one shared social neighbor.
+
+```http
+GET /api/v1/entities/person:alice-chen/connections?degree=2&limit=50
+```
+
+Example response:
+
+```json
+{
+  "entity_id": "person:alice-chen",
+  "degree": 2,
+  "count": 1,
+  "results": [
+    {
+      "entity": {
+        "id": "person:carla-singh",
+        "label": "Person",
+        "display_name": "Carla Singh",
+        "properties": {}
+      },
+      "degree": 2,
+      "score": 0.83,
+      "shared_neighbor_count": 1,
+      "jaccard": 0.2,
+      "adamic_adar": 0.721348,
+      "shared_neighbors": [
+        {
+          "id": "person:ben-ortiz",
+          "label": "Person",
+          "display_name": "Ben Ortiz",
+          "properties": {}
+        }
+      ],
+      "paths": [
+        ["person:alice-chen", "person:ben-ortiz", "person:carla-singh"]
+      ],
+      "explanation": {
+        "summary": "Alice Chen is connected to Carla Singh through Ben Ortiz.",
+        "algorithms": ["bounded_bfs_depth_2", "jaccard_coefficient", "adamic_adar"],
+        "evidence": [
+          {
+            "type": "shared_social_neighbor",
+            "shared_neighbor_ids": ["person:ben-ortiz"],
+            "path_count": 1
+          }
+        ]
+      }
+    }
+  ]
+}
+```
+
+Frontend rendering rules:
+
+- Show `score` as the main ranking strength.
+- Show `shared_neighbor_count`, `jaccard`, and `adamic_adar` in an evidence/details panel.
+- Render each `paths[]` entry as source -> shared neighbor -> candidate.
+- Do not show direct first-degree people as second-degree candidates; the backend already excludes them.
+- Use empty `results[]` as a normal "no second-degree candidates found" state.
+
+## Feature 4: Third-Degree Connections
+
+Use `degree=3` to discover people exactly three social hops away. These candidates are not direct connections and are not second-degree candidates.
+
+```http
+GET /api/v1/entities/person:alice-chen/connections?degree=3&limit=50
+```
+
+Example response:
+
+```json
+{
+  "entity_id": "person:alice-chen",
+  "degree": 3,
+  "count": 1,
+  "results": [
+    {
+      "entity": {
+        "id": "person:david-kim",
+        "label": "Person",
+        "display_name": "David Kim",
+        "properties": {}
+      },
+      "degree": 3,
+      "score": 0.71,
+      "path_count": 1,
+      "katz_score": 0.000000125,
+      "paths": [
+        ["person:alice-chen", "person:ben-ortiz", "person:carla-singh", "person:david-kim"]
+      ],
+      "intermediate_nodes": [
+        {
+          "id": "person:ben-ortiz",
+          "label": "Person",
+          "display_name": "Ben Ortiz",
+          "centrality_rank": 1,
+          "social_degree": 4,
+          "properties": {}
+        }
+      ],
+      "explanation": {
+        "summary": "Alice Chen is connected to David Kim through Ben Ortiz and Carla Singh.",
+        "algorithms": ["bounded_bfs_depth_3", "katz_beta_0.005", "path_diversity", "intermediate_social_degree_rank"],
+        "evidence": []
+      }
+    }
+  ]
+}
+```
+
+Frontend rendering rules:
+
+- Render paths as source -> first intermediate -> second intermediate -> candidate.
+- Use `path_count` and `score` for ranking and emphasis.
+- Show `katz_score` in technical evidence panels; it is intentionally small because beta is `0.005`.
+- Show `intermediate_nodes` as the bridge people, ordered by `centrality_rank`.
+- Use empty `results[]` as a normal "no third-degree candidates found" state.
+
 ## Deterministic Complex Seed Data
 
 The backend seed is intentionally larger than a tiny demo. It is designed to mimic messy real-world relationship intelligence data:
